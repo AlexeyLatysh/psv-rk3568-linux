@@ -1,0 +1,7 @@
+/dts-v1/;
+/plugin/;
+
+&sdmmc0 {
+	/* front micro-SD */
+	status = "disabled";
+};

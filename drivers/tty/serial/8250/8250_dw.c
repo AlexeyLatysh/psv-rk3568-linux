@@ -30,6 +30,8 @@
 #include <linux/serial_8250.h>
 #include <linux/serial_reg.h>
 
+#include <linux/of_gpio.h>
+
 #ifdef MODULE
 #include "8250_dwlib.c"
 #else
@@ -61,6 +63,12 @@
 #define DW_UART_QUIRK_ARMADA_38X	BIT(1)
 #define DW_UART_QUIRK_SKIP_SET_RATE	BIT(2)
 #define DW_UART_QUIRK_IS_DMA_FC		BIT(3)
+
+void rs485_set_direct(struct uart_port *p, unsigned int dir)
+{
+    if(gpio_is_valid(p->gpio_dir)) gpio_set_value(p->gpio_dir, dir);
+}
+EXPORT_SYMBOL(rs485_set_direct);
 
 static inline struct dw8250_data *clk_to_dw8250_data(struct notifier_block *nb)
 {
@@ -573,6 +581,7 @@ static int dw8250_probe(struct platform_device *pdev)
 	int irq;
 	int err;
 	u32 val;
+	int ret;
 
 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!regs)
@@ -651,6 +660,20 @@ static int dw8250_probe(struct platform_device *pdev)
 		data->msr_mask_off |= UART_MSR_RI;
 		data->msr_mask_off |= UART_MSR_TERI;
 	}
+
+	p->gpio_dir = of_get_named_gpio(pdev->dev.of_node, "dir-gpio", 0);
+
+	if (gpio_is_valid(p->gpio_dir)) {
+		dev_dbg(&pdev->dev, "using gpio %d for uart%d_dir\n",
+				p->gpio_dir, pdev->id);
+		ret = devm_gpio_request(&pdev->dev, p->gpio_dir, "rs485_dir");
+		if (ret) {
+		dev_err(&pdev->dev, "gpio%d request failed, ret %d\n",
+				p->gpio_dir, ret);
+		return ret;
+		}
+		else gpio_direction_output(p->gpio_dir, 0);
+	} else if (p->gpio_dir == -EPROBE_DEFER) return -EPROBE_DEFER;
 
 #ifdef CONFIG_ARCH_ROCKCHIP
 	if (device_property_read_bool(p->dev, "wakeup-source"))

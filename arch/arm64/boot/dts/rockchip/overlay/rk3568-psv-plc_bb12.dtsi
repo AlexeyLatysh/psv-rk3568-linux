@@ -1,0 +1,130 @@
+/dts-v1/;
+/plugin/;
+
+// DT for PLC_BB12_revX base board
+
+#include <dt-bindings/pinctrl/rockchip.h>
+#include <dt-bindings/display/media-bus-format.h>
+#include <dt-bindings/clock/rk3568-cru.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pwm/pwm.h>
+
+&{/} {
+	vcc24v: vcc24v-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc24v";
+		regulator-min-microvolt = <24000000>;
+		regulator-max-microvolt = <24000000>;
+		regulator-always-on;
+	};
+
+	vcc12v_ext: vcc12v-ext-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc12v_ext";
+		regulator-min-microvolt = <12000000>;
+		regulator-max-microvolt = <12000000>;
+		regulator-always-on;
+		vin-supply = <&vcc24v>;
+	};
+
+	vcc1v8_lvds_ext: vcc1v8-lvds-ext-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc1v8_lvds_ext";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		regulator-always-on;
+		vin-supply = <&vcc3v3_ext>;
+	};
+
+	lvds-encoder {
+		status = "okay";
+		compatible = "ti,ds90c187", "lvds-encoder";
+		power-supply = <&vcc1v8_lvds_ext>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+
+				lvds_encoder_input: endpoint {
+					remote-endpoint = <&rgb_out>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+
+				lvds_encoder_output: endpoint {
+					remote-endpoint = <&panel_in>;
+				};
+			};
+		};
+	};
+};
+
+&vcc5v0 {
+	vin-supply = <&vcc24v>;
+};
+
+&lcd_bl {
+	vin-supply = <&vcc12v_ext>;
+};
+
+&rgb {
+	ports {
+		port@1 {
+			rgb_out: endpoint {
+				remote-endpoint = <&lvds_encoder_input>;
+			};
+		};
+	};
+};
+
+&tft_panel {
+	// enable-gpios = <&gpio3 RK_PC5 GPIO_ACTIVE_LOW>;
+	// MEDIA_BUS_FMT_RGB666_1X7X3_SPWG  - "jeida-18"
+	// MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA - "jeida-24"
+	// MEDIA_BUS_FMT_RGB888_1X7X4_SPWG  - "vesa-24"
+	// bus-format = <MEDIA_BUS_FMT_RGB888_1X7X4_SPWG>;
+	port {
+		panel_in: endpoint {
+			remote-endpoint = <&lvds_encoder_output>;
+		};
+	};
+};
+
+// Use I2S MCLK for audio on PLC_BB12 base board
+&tlv320aic3104 {
+	clock-names = "mclk";
+	clocks = <&cru I2S3_MCLKOUT>;
+	assigned-clocks = <&cru I2S3_MCLKOUT>, <&cru I2S3_MCLK_IOE>;
+	assigned-clock-rates = <12000000>;
+	assigned-clock-parents = <&cru I2S3_MCLKOUT_TX>, <&cru I2S3_MCLKOUT>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2s3m1_mclk>;
+};
+
+&pinctrl {
+	touchscreen {
+		GPIO7_pin: GPIO7-pin {
+			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+};
+
+&tsc2046 {
+	pinctrl-0 = <&GPIO7_pin>;
+	interrupt-parent = <&gpio0>;
+	interrupts = <RK_PB0 0>;	/* GPIO0_B0 */
+	pendown-gpio = <&gpio0 RK_PB0 0>;
+	ti,settle-delay-usec = /bits/ 16 <150>;
+};
+
+&lcd_bl {
+	// pwms = <&pwm14 0 500000 PWM_POLARITY_INVERTED>;
+	pwms = <&pwm14 0 500000 0>;
+	power-supply = <&vcc12v_ext>;
+};
+

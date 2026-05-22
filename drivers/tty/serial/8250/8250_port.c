@@ -32,6 +32,7 @@
 #include <linux/uaccess.h>
 #include <linux/pm_runtime.h>
 #include <linux/ktime.h>
+#include <linux/of_gpio.h>
 
 #include <asm/io.h>
 #include <asm/irq.h>
@@ -1546,8 +1547,18 @@ static inline void __stop_tx(struct uart_8250_port *p)
 		__stop_tx_rs485(p, stop_delay);
 	}
 
+	if(gpio_is_valid(p->port.gpio_dir)) {
+		unsigned char lsr = serial_in(p, UART_LSR);
+		while ((lsr & UART_LSR_TEMT) != UART_LSR_TEMT) {
+			lsr = serial_in(p, UART_LSR);
+			cpu_relax();
+		}
+	}
+
 	if (serial8250_clear_THRI(p))
 		serial8250_rpm_put_tx(p);
+
+	if(gpio_is_valid(p->port.gpio_dir)) gpio_set_value(p->port.gpio_dir, 0);
 }
 
 static void serial8250_stop_tx(struct uart_port *port)
@@ -1827,6 +1838,7 @@ void serial8250_tx_chars(struct uart_8250_port *up)
 	int count;
 
 	if (port->x_char) {
+		if(gpio_is_valid(port->gpio_dir)) gpio_set_value(port->gpio_dir, 1);
 		uart_xchar_out(port, UART_TX);
 		return;
 	}
@@ -1840,6 +1852,7 @@ void serial8250_tx_chars(struct uart_8250_port *up)
 	}
 
 	count = up->tx_loadsz;
+	if(gpio_is_valid(port->gpio_dir)) gpio_set_value(port->gpio_dir, 1);
 	do {
 		serial_out(up, UART_TX, xmit->buf[xmit->tail]);
 		if (up->bugs & UART_BUG_TXRACE) {

@@ -1,0 +1,24 @@
+/dts-v1/;
+/plugin/;
+
+#include "rk3568-psv-plc_bb12.dtsi"
+
+&{/} {
+    model = "PLC PSV RK3568 24\"";
+};
+
+&tft_panel {
+    width-mm = <531>;
+    height-mm = <299>;
+};
+
+&display_timings {
+    native-mode = <&timing1920x1080>;
+};
+
+&tsc2046 {
+    touchscreen-size-x = <1920>;
+    touchscreen-size-y = <1080>;
+    ti,x-plate-ohms = /bits/ 16 <70>;
+    touchscreen-inverted-y;
+};

@@ -1,0 +1,7 @@
+/dts-v1/;
+/plugin/;
+
+/* USB OTG/USB Host_1 USB 2.0 Comb PHY_0 - front panel USB OTG */
+&usb2phy0 {
+	status = "disabled";
+};

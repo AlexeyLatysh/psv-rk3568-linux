@@ -1,0 +1,44 @@
+/dts-v1/;
+/plugin/;
+
+// DT for PLC_BB5_revX base board
+
+#include <dt-bindings/pinctrl/rockchip.h>
+
+&{/} {
+	codec_clk: codec_clk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <12000000>;
+	};
+};
+
+&pinctrl {
+	touchscreen {
+		GPIO1_pin: GPIO1-pin {
+			rockchip,pins = <4 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	gpio7 {
+		GPIO7_pin: GPIO7-pin {
+			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+};
+
+&tsc2046 {
+    pinctrl-0 = <&GPIO1_pin>;
+    interrupt-parent = <&gpio4>;
+    interrupts = <RK_PC2 0>;	/* GPIO4_C2 */
+    pendown-gpio = <&gpio4 RK_PC2 0>;
+	touchscreen-min-pressure = <80>;
+	ti,x-plate-ohms = /bits/ 16 <100>;
+};
+
+&tlv320aic3104 {
+	system-clock-frequency = <12000000>;
+	clocks = <&codec_clk>;
+	assigned-clocks = <&codec_clk>;
+	assigned-clock-rates = <12000000>;
+};

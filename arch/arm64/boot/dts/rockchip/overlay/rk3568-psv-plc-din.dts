@@ -1,0 +1,56 @@
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pinctrl/rockchip.h>
+#include "../rk3568.dtsi"
+
+&{/} {
+    model = "PLC PSV RK3568 DIN";
+	aliases {
+		serial0 = &uart1;	// RS232
+		serial1 = &uart4;	// ������
+		serial2 = &uart2;	// RS485-1
+		serial3 = &uart7;	// RS485-2
+		serial4 = &uart9;	// RS485-3
+		/delete-property/ serial5;	// GSM
+	};
+};
+
+&led1_green {
+    gpios = <&gpio2 RK_PD7 GPIO_ACTIVE_HIGH>;
+};
+
+&led1_red {
+    gpios = <&gpio3 RK_PA0 GPIO_ACTIVE_HIGH>;
+};
+
+&led2_green {
+    gpios = <&gpio2 RK_PD6 GPIO_ACTIVE_HIGH>;
+};
+
+&led2_red {
+    gpios = <&gpio2 RK_PD4 GPIO_ACTIVE_HIGH>;
+};
+        
+&led3_green {
+    gpios = <&gpio2 RK_PD0 GPIO_ACTIVE_HIGH>;
+};
+        
+&led3_red {
+    gpios = <&gpio2 RK_PD5 GPIO_ACTIVE_HIGH>;
+};
+
+&leds_gpio {
+    rockchip,pins =
+        <2 RK_PD7 RK_FUNC_GPIO &pcfg_pull_down>,
+        <3 RK_PA0 RK_FUNC_GPIO &pcfg_pull_down>,
+        <2 RK_PD6 RK_FUNC_GPIO &pcfg_pull_down>,
+        <2 RK_PD4 RK_FUNC_GPIO &pcfg_pull_down>,
+        <2 RK_PD0 RK_FUNC_GPIO &pcfg_pull_down>,
+        <2 RK_PD5 RK_FUNC_GPIO &pcfg_pull_down>;
+};
+
+&spi0 {
+	status = "disabled";
+};

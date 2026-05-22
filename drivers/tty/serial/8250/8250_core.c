@@ -1024,6 +1024,7 @@ int serial8250_register_8250_port(const struct uart_8250_port *up)
 #ifdef CONFIG_ARCH_ROCKCHIP
 		uart->port.line		= up->port.line;
 #endif
+		uart->port.gpio_dir	= up->port.gpio_dir;
 		/* Take tx_loadsz from fifosize if it wasn't set separately */
 		if (uart->port.fifosize && !uart->tx_loadsz)
 			uart->tx_loadsz = uart->port.fifosize;

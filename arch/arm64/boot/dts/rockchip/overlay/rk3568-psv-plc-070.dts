@@ -1,0 +1,13 @@
+/dts-v1/;
+/plugin/;
+
+#include "rk3568-psv-plc_bb5.dtsi"
+
+&{/} {
+    model = "PLC PSV RK3568 7\"";
+};
+
+&tft_panel {
+    width-mm = <154>;
+    height-mm = <86>;
+};
