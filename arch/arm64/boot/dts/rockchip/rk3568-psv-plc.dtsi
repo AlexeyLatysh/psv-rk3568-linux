@@ -320,52 +320,6 @@
 		status = "okay";
 	};
 
-	// panel {
-	// 	compatible = "simple-panel";
-	// 	// backlight = <&backlight>;
-	// 	power-supply = <&vcc3v3_ext>;
-	// 	enable-delay-ms = <20>;
-	// 	prepare-delay-ms = <20>;
-	// 	unprepare-delay-ms = <20>;
-	// 	disable-delay-ms = <20>;
-	// 	bus-format = <MEDIA_BUS_FMT_RGB666_1X7X3_SPWG>;
-	// 	width-mm = <217>;
-	// 	height-mm = <136>;
-
-	// 	display-timings {
-	// 		native-mode = <&timing0>;
-
-	// 		timing0: timing0 {
-	// 			clock-frequency = <68000000>;
-	// 			hactive = <800>;
-	// 			vactive = <1280>;
-	// 			hback-porch = <30>;
-	// 			hfront-porch = <30>;
-	// 			vback-porch = <4>;
-	// 			vfront-porch = <2>;
-	// 			hsync-len = <4>;
-	// 			vsync-len = <2>;
-	// 			hsync-active = <0>;
-	// 			vsync-active = <0>;
-	// 			de-active = <0>;
-	// 			pixelclk-active = <0>;
-	// 		};
-	// 	};
-
-	// 	ports {
-	// 		#address-cells = <1>;
-	// 		#size-cells = <0>;
-
-	// 		port@0 {
-	// 			reg = <0>;
-	// 			dual-lvds-even-pixels;
-	// 			panel_in_lvds: endpoint {
-	// 				remote-endpoint = <&lvds_out_panel>;
-	// 			};
-	// 		};
-	// 	};
-	// };
-
 };
 
 &bus_npu {
@@ -791,6 +745,18 @@
 		status = "okay";
 		interrupt-parent = <&gpio3>;
 		interrupts = <RK_PD4 IRQ_TYPE_EDGE_FALLING>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
+		
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		uart@0 {
+			reg = <0>;
+			uart-has-rtscts;
+			nxp,modem-control-line-ports = <0>;
+		};
 	};
 };
 
@@ -1088,7 +1054,16 @@
 	vqmmc-supply = <&vcc3v3_ext>;
 	mmc-pwrseq = <&wl_en>;
 	non-removable;
+	#address-cells = <1>;
+	#size-cells = <0>;
 	status = "okay";
+
+    wifi_qca9377: wifi@1 {
+        reg = <1>;
+		interrupt-parent = <&gpio3>;
+		interrupts = <RK_PD5 IRQ_TYPE_LEVEL_HIGH>;
+		interrupt-names = "host-wake";
+    };
 };
 
 &sfc {
@@ -1299,48 +1274,3 @@
 &pmu {
 	status = "okay";
 };
-
-
-// &dsi0 {
-// 	status = "disabled";
-// };
-
-// &dsi0_in_vp0 {
-// 	status = "disabled";
-// };
-
-// &dsi0_in_vp1 {
-// 	status = "disabled";
-// };
-
-// &video_phy0 {
-// 	status = "okay";
-// };
-
-// &lvds {
-// 	status = "okay";
-
-// 	ports {
-// 		port@1 {
-// 			reg = <1>;
-
-// 			lvds_out_panel: endpoint {
-// 				remote-endpoint = <&panel_in_lvds>;
-// 			};
-// 		};
-// 	};
-// };
-
-// &lvds_in_vp1 {
-// 	status = "okay";
-// };
-
-// &lvds_in_vp2 {
-// 	status = "disabled";
-// };
-
-// &route_lvds {
-// 	status = "okay";
-// 	connect = <&vp1_out_lvds>;
-// };
-

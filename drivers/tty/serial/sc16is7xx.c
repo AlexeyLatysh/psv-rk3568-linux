@@ -499,7 +499,7 @@ static int sc16is7xx_set_baud(struct uart_port *port, int baud)
 	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
 	u8 lcr;
 	unsigned int prescaler = 1;
-	unsigned long clk = port->uartclk, div = clk / 16 / baud;
+	unsigned long clk = port->uartclk, div = (clk / (16 * baud)) + (((clk % (16 * baud)) * 2) / (16 * baud));
 
 	if (div >= BIT(16)) {
 		prescaler = 4;
