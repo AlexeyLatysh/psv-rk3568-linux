@@ -705,7 +705,7 @@ static struct rockchip_clk_branch rk3568_clk_branches[] __initdata = {
 			&rk3568_i2s3_2ch_tx_fracmux),
 	GATE(MCLK_I2S3_2CH_TX, "mclk_i2s3_2ch_tx", "clk_i2s3_2ch_tx", 0,
 			RK3568_CLKGATE_CON(7), 6, GFLAGS),
-	COMPOSITE_NODIV(I2S3_MCLKOUT_TX, "i2s3_mclkout_tx", i2s3_mclkout_tx_p, CLK_SET_RATE_PARENT,
+	COMPOSITE_NODIV(I2S3_MCLKOUT_TX, "i2s3_mclkout_tx", i2s3_mclkout_tx_p, CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
 			RK3568_CLKSEL_CON(21), 15, 1, MFLAGS,
 			RK3568_CLKGATE_CON(7), 7, GFLAGS),
 
@@ -724,7 +724,7 @@ static struct rockchip_clk_branch rk3568_clk_branches[] __initdata = {
 
 	MUXGRF(I2S1_MCLKOUT, "i2s1_mclkout", i2s1_mclkout_p,  CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
 			RK3568_GRF_SOC_CON1, 5, 1, MFLAGS),
-	MUXGRF(I2S3_MCLKOUT, "i2s3_mclkout", i2s3_mclkout_p,  CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
+	MUXGRF(I2S3_MCLKOUT, "i2s3_mclkout", i2s3_mclkout_p,  CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT  | CLK_IGNORE_UNUSED,
 			RK3568_GRF_SOC_CON2, 15, 1, MFLAGS),
 	MUXGRF(I2S1_MCLK_RX_IOE, "i2s1_mclk_rx_ioe", i2s1_mclk_rx_ioe_p,  0,
 			RK3568_GRF_SOC_CON2, 0, 1, MFLAGS),
@@ -732,7 +732,7 @@ static struct rockchip_clk_branch rk3568_clk_branches[] __initdata = {
 			RK3568_GRF_SOC_CON2, 1, 1, MFLAGS),
 	MUXGRF(I2S2_MCLK_IOE, "i2s2_mclk_ioe", i2s2_mclk_ioe_p,  0,
 			RK3568_GRF_SOC_CON2, 2, 1, MFLAGS),
-	MUXGRF(I2S3_MCLK_IOE, "i2s3_mclk_ioe", i2s3_mclk_ioe_p,  0,
+	MUXGRF(I2S3_MCLK_IOE, "i2s3_mclk_ioe", i2s3_mclk_ioe_p,  CLK_IGNORE_UNUSED, 
 			RK3568_GRF_SOC_CON2, 3, 1, MFLAGS),
 
 	GATE(HCLK_PDM, "hclk_pdm", "hclk_gic_audio", 0,
