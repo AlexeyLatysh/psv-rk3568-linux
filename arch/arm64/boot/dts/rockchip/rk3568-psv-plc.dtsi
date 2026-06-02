@@ -16,6 +16,10 @@
 	model = "PSV PLC RK3568";
 	compatible = "rockchip,rk3568-psv-plc", "rockchip,rk3568";
 
+    chosen {
+        bootargs = "net.ifnames=0 biosdevname=0"; //name network interface from end0 back to the traditional eth0
+    };
+
 	aliases {
 		mmc2 = &sdmmc2;
 		serial0 = &uart1;	// RS232
