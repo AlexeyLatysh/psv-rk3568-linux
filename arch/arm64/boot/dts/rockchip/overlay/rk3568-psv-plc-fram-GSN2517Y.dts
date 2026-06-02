@@ -1,7 +1,0 @@
-/dts-v1/;
-/plugin/;
-
-// GSN2517Y fram
-&retain {
-	compatible = "jedec,spi-nor";
-};

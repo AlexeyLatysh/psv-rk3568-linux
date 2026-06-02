@@ -13,7 +13,6 @@ dtbo-$(CONFIG_ARCH_ROCKCHIP) += \
 	rk3568-psv-plc-240.dtbo \
 	rk3568-psv-plc-no-front-sd.dtbo \
 	rk3568-psv-plc-no-front-usb.dtbo \
-	rk3568-psv-plc-fram-GSN2517Y.dtbo \
 	rk3568-psv-plc-din.dtbo \
 
 targets += $(dtbo-y)
