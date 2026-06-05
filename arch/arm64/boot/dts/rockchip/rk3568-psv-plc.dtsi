@@ -202,6 +202,7 @@
 	tft_panel: rgb0_panel {
 		status = "okay";
 		compatible = "simple-panel";
+		connector-type = "dpi";
 		enable-gpios = <&gpio3 RK_PC5 GPIO_ACTIVE_HIGH>;
 		backlight = <&lcd_bl>;
 		power-supply = <&vcc3v3_ext>;
@@ -285,9 +286,11 @@
 			};
 		};
 		
-		panel_port: port {
-			panel_in: endpoint {
-				remote-endpoint = <&rgb_out>;
+		ports {
+			panel_port: port {
+				panel_in: endpoint {
+					remote-endpoint = <&rgb_out>;
+				};
 			};
 		};
 	};
