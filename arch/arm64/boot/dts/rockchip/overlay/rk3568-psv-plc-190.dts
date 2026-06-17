@@ -16,9 +16,7 @@
         native-mode = <&timing1280x1024>;
 };
 
-&tsc2046 {
+&touchscreen {
         touchscreen-size-x = <1280>;
         touchscreen-size-y = <1024>;
-        ti,x-plate-ohms = /bits/ 16 <70>;
-        touchscreen-inverted-x;
 };

@@ -83,11 +83,6 @@
 };
 
 &tft_panel {
-	// enable-gpios = <&gpio3 RK_PC5 GPIO_ACTIVE_LOW>;
-	// MEDIA_BUS_FMT_RGB666_1X7X3_SPWG  - "jeida-18"
-	// MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA - "jeida-24"
-	// MEDIA_BUS_FMT_RGB888_1X7X4_SPWG  - "vesa-24"
-	// bus-format = <MEDIA_BUS_FMT_RGB888_1X7X4_SPWG>;
 	port {
 		panel_in: endpoint {
 			remote-endpoint = <&lvds_encoder_output>;
@@ -118,8 +113,10 @@
 	pinctrl-0 = <&GPIO7_pin>;
 	interrupt-parent = <&gpio0>;
 	interrupts = <RK_PB0 0>;	/* GPIO0_B0 */
-	pendown-gpio = <&gpio0 RK_PB0 0>;
-	ti,settle-delay-usec = /bits/ 16 <150>;
+};
+
+&touchscreen {
+    touchscreen-x-plate-ohms = <40>;
 };
 
 &lcd_bl {

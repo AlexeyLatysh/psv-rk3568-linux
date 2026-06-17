@@ -31,9 +31,6 @@
     pinctrl-0 = <&GPIO1_pin>;
     interrupt-parent = <&gpio4>;
     interrupts = <RK_PC2 0>;	/* GPIO4_C2 */
-    pendown-gpio = <&gpio4 RK_PC2 0>;
-	touchscreen-min-pressure = <80>;
-	ti,x-plate-ohms = /bits/ 16 <100>;
 };
 
 &tlv320aic3104 {

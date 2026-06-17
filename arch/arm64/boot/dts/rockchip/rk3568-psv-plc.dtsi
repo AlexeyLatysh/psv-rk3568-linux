@@ -286,11 +286,9 @@
 			};
 		};
 		
-		ports {
-			panel_port: port {
-				panel_in: endpoint {
-					remote-endpoint = <&rgb_out>;
-				};
+		panel_port: port {
+			panel_in: endpoint {
+				remote-endpoint = <&rgb_out>;
 			};
 		};
 	};
@@ -324,6 +322,15 @@
 	};
 
 	test-power {
+		status = "okay";
+	};
+
+	touchscreen: touchscreen {
+		compatible = "resistive-adc-touch";
+		io-channels = <&tsc2046 1>, <&tsc2046 3>, <&tsc2046 4>, <&tsc2046 5>;
+		io-channel-names = "y", "z1", "z2", "x";
+		touchscreen-min-pressure = <65000>;
+		touchscreen-x-plate-ohms = <300>;
 		status = "okay";
 	};
 
@@ -1084,19 +1091,39 @@
 
 	tsc2046: tsc2046@0 {
 		reg = <0>;			/* CS0 */
-		compatible = "ti,tsc2046";
+		compatible = "ti,tsc2046e-adc";
 		spi-max-frequency = <1000000>;
         pinctrl-names = "default";
 		vcc-supply = <&vcc3v3_ext>;
-        
-        touchscreen-size-x = <800>;
-        touchscreen-size-y = <480>;
-        ti,debounce-max = /bits/ 16 <30>;
-        ti,debounce-tol = /bits/ 16 <15>;
-		ti,x-plate-ohms = /bits/ 16 <150>;
-		ti,pressure-max = /bits/ 16 <255>;
 		linux,wakeup;
-        ti,keep-vref-on;
+
+		#io-channel-cells = <1>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		channel@1 {
+			reg = <1>;
+			settling-time-us = <700>;
+			oversampling-ratio = <5>;
+		};
+
+		channel@3 {
+			reg = <3>;
+			settling-time-us = <700>;
+			oversampling-ratio = <5>;
+		};
+
+		channel@4 {
+			reg = <4>;
+			settling-time-us = <700>;
+			oversampling-ratio = <5>;
+		};
+
+		channel@5 {
+			reg = <5>;
+			settling-time-us = <700>;
+			oversampling-ratio = <5>;
+		};
 	};
 };
 

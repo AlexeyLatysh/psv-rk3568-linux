@@ -92,6 +92,7 @@ static int grts_cb(const void *data, void *private)
 	if ((!x && !y) || (st->pressure && (press < st->pressure_min))) {
 		/* report end of touch */
 		input_report_key(st->input, BTN_TOUCH, 0);
+		input_report_abs(st->input, ABS_PRESSURE, 0);
 		input_sync(st->input);
 		return 0;
 	}
