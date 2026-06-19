@@ -5,6 +5,7 @@
 #include <dt-bindings/pinctrl/rockchip.h>
 #include <dt-bindings/clock/rk3568-cru.h>
 #include <dt-bindings/display/rockchip_vop.h>
+#include <dt-bindings/input/input.h>
 
 &{/} {
     model = "PLC PSV RK3568 DIN";
@@ -12,6 +13,20 @@
 		serial1 = "/soc/serial@fe680000";	// &uart4 modules
 		serial2 = "/soc/serial@fe660000";	// &uart2 RS485-1
 		serial3 = "/soc/serial@fe6b0000";	// &uart7 RS485-2
+	};
+
+	gpio-keys {
+		compatible = "gpio-keys";
+		pinctrl-0 = <&run_sw>;
+		pinctrl-names = "default";
+
+		switch-run {
+			label = "Run Switch";
+			gpios = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
+			linux,input-type = <EV_SW>;
+			linux,code = <SW_LID>;
+			debounce-interval = <100>;
+		};
 	};
 
 	hdmi-con {
@@ -193,6 +208,12 @@
 	uart4 { // RS485-0_R/T
 		RS485_0_RT_pin: RS485-0_RT-pin {
 			rockchip,pins = <1 RK_PB2 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+	};
+
+	run_switch {
+		run_sw: run-sw {
+			rockchip,pins = <4 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 };
