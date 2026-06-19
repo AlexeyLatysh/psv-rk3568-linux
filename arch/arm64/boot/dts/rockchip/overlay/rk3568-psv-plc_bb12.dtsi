@@ -8,6 +8,7 @@
 #include <dt-bindings/clock/rk3568-cru.h>
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/pwm/pwm.h>
+#include "rk3568-psv-plc-tft.dtsi"
 
 &{/} {
 	vcc24v: vcc24v-regulator {
@@ -72,14 +73,8 @@
 	vin-supply = <&vcc12v_ext>;
 };
 
-&rgb {
-	ports {
-		port@1 {
-			rgb_out: endpoint {
-				remote-endpoint = <&lvds_encoder_input>;
-			};
-		};
-	};
+&rgb_out {
+	remote-endpoint = <&lvds_encoder_input>;
 };
 
 &tft_panel {

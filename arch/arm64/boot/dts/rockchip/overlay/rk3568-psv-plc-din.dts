@@ -3,18 +3,43 @@
 
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/pinctrl/rockchip.h>
-#include "../rk3568.dtsi"
+#include <dt-bindings/clock/rk3568-cru.h>
+#include <dt-bindings/display/rockchip_vop.h>
 
 &{/} {
     model = "PLC PSV RK3568 DIN";
 	aliases {
-		serial0 = &uart1;	// RS232
-		serial1 = &uart4;	// ������
-		serial2 = &uart2;	// RS485-1
-		serial3 = &uart7;	// RS485-2
-		serial4 = &uart9;	// RS485-3
-		/delete-property/ serial5;	// GSM
+		serial1 = "/soc/serial@fe680000";	// &uart4 modules
+		serial2 = "/soc/serial@fe660000";	// &uart2 RS485-1
+		serial3 = "/soc/serial@fe6b0000";	// &uart7 RS485-2
 	};
+
+	hdmi-con {
+		compatible = "hdmi-connector";
+		type = "a";
+
+		port {
+			hdmi_con_in: endpoint {
+				remote-endpoint = <&hdmi_out_con>;
+			};
+		};
+	};
+};
+
+&bt_en {
+	reset-gpios = <&gpio0 RK_PC6 GPIO_ACTIVE_LOW>;
+};
+
+&GPIO6_pin {
+	rockchip,pins = <0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_down>;
+};
+
+&wl_en {
+	reset-gpios = <&gpio4 RK_PC4 GPIO_ACTIVE_LOW>;
+};
+
+&GPIO5_pin {
+	rockchip,pins = <4 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
 };
 
 &led1_green {
@@ -51,6 +76,245 @@
         <2 RK_PD5 RK_FUNC_GPIO &pcfg_pull_down>;
 };
 
-&spi0 {
-	status = "disabled";
+&can1 {
+	assigned-clocks = <&cru CLK_CAN1>;
+	assigned-clock-rates = <200000000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&can1m1_pins>;
+	status = "okay";
+};
+
+&can2 {
+	pinctrl-0 = <&can2m0_pins>;
+};
+
+&spi3 {
+	pinctrl-0 = <&spi3m0_pins &spi3m0_cs0 &spi3m0_cs0>;
+};
+
+&gmac0 {
+	assigned-clocks = <&cru SCLK_GMAC0_RX_TX>, <&cru SCLK_GMAC0>;
+	assigned-clock-parents = <&cru SCLK_GMAC0_RGMII_SPEED>, <&cru CLK_MAC0_2TOP>, <&gmac0_clkin>;
+	clock_in_out = "input";
+	phy-mode = "rgmii";
+	phy-supply = <&vcc_1v8>;
+	phy-handle = <&rgmii_phy0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&gmac0_miim
+		     &gmac0_tx_bus2
+		     &gmac0_rx_bus2
+			 &gmac0_clkinout
+		     &gmac0_rgmii_clk
+		     &gmac0_rgmii_bus>;
+	snps,reset-gpio = <&gpio0 RK_PC7 GPIO_ACTIVE_LOW>;
+	snps,reset-active-low;
+	/* Reset time is 20ms, 100ms for rtl8211f */
+	snps,reset-delays-us = <0 20000 100000>;
+	tx_delay = <0x4f>;
+	rx_delay = <0x0f>;
+	status = "okay";
+};
+
+&mdio0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	rgmii_phy0: phy@1 {
+		compatible = "ethernet-phy-ieee802.3-c22";
+		reg = <0x1>;
+	};
+};
+
+&gmac1 {
+	assigned-clocks = <&cru SCLK_GMAC1_RX_TX>, <&cru SCLK_GMAC1>;
+	assigned-clock-parents = <&cru SCLK_GMAC1_RGMII_SPEED>, <&cru CLK_MAC1_2TOP>, <&gmac1_clkin>;
+	clock_in_out = "input";
+	phy-mode = "rgmii";
+	phy-supply = <&vcc_1v8>;
+	phy-handle = <&rgmii_phy1>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&gmac1m0_miim
+		     &gmac1m0_tx_bus2
+		     &gmac1m0_rx_bus2
+			 &gmac1m0_clkinout
+		     &gmac1m0_rgmii_clk
+		     &gmac1m0_rgmii_bus>;
+	snps,reset-gpio = <&gpio4 RK_PB1 GPIO_ACTIVE_LOW>;
+	snps,reset-active-low;
+	/* Reset time is 20ms, 100ms for rtl8211f */
+	snps,reset-delays-us = <0 20000 100000>;
+	tx_delay = <0x4f>;
+	rx_delay = <0x0f>;
+	status = "okay";
+};
+
+&mdio1 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	rgmii_phy1: phy@1 {
+		compatible = "ethernet-phy-ieee802.3-c22";
+		reg = <0x1>;
+	};
+};
+
+&uart2 {
+	// RS485-1
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart2m0_xfer &RS485_1_RT_pin>;
+	dir-gpio = <&gpio4 RK_PA0 GPIO_ACTIVE_HIGH>;
+};
+
+&uart4 {
+	// modules
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart4m0_xfer &RS485_0_RT_pin>;
+    dir-gpio = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
+	status = "okay";
+};
+
+&uart7 {
+	// RS485-2
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart7m2_xfer &RS485_1_RT_pin>;
+	dir-gpio = <&gpio4 RK_PA0 GPIO_ACTIVE_HIGH>;
+};
+
+&uart9 {
+	// RS485-3
+	dir-gpio = <&gpio3 RK_PC6 GPIO_ACTIVE_HIGH>;
+};
+
+&RS485_3_RT_pin {
+    rockchip,pins = <3 RK_PC6 RK_FUNC_GPIO &pcfg_pull_down>;
+};
+
+&pinctrl {
+	uart4 { // RS485-0_R/T
+		RS485_0_RT_pin: RS485-0_RT-pin {
+			rockchip,pins = <1 RK_PB2 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+	};
+};
+
+&GPIO0_pin {
+	// GPIO0 - resGSM_pins
+	rockchip,pins = <0 RK_PC0 RK_FUNC_GPIO &pcfg_pull_up>;
+};
+
+&vcc5v0_host_en {
+	rockchip,pins = <3 RK_PD3 RK_FUNC_GPIO &pcfg_pull_none>;
+};
+
+&sdmmc0 {
+	/* front micro-SD */
+	pinctrl-0 = <&sdmmc0_bus4 &sdmmc0_clk &sdmmc0_cmd &sdmmc0_det>;
+};
+
+&u2phy0_host {
+	phy-supply = <&vcc5v0_host>;
+	status = "okay";
+};
+
+&u2phy0_otg {
+	vbus-supply = <&vcc5v0_otg>;
+	status = "okay";
+};
+
+&u2phy1_host {
+	phy-supply = <&vcc5v0_host>;
+	status = "okay";
+};
+
+&u2phy1_otg {
+	phy-supply = <&vcc5v0_host>;
+	status = "okay";
+};
+
+/* USB OTG/USB Host_1 USB 2.0 Comb PHY_0 - front panel USB OTG */
+&usb2phy0 {
+	status = "okay";
+};
+
+/* USB Host_1/USB Host_2 USB 2.0 Comb PHY_0 */
+&usb2phy1 {
+	status = "okay";
+};
+
+/* USB 2.0 Host_2 EHCI controller for high speed */
+&usb_host0_ehci {
+	status = "okay";
+};
+
+/* USB 2.0 Host_2 OHCI controller for full/low speed */
+&usb_host0_ohci {
+	status = "okay";
+};
+
+/* USB 2.0 Host_3 EHCI controller for high speed */
+&usb_host1_ehci {
+	status = "okay";
+};
+
+/* USB 2.0 Host_3 OHCI controller for full/low speed */
+&usb_host1_ohci {
+	status = "okay";
+};
+
+&usbdrd_dwc3 {
+	dr_mode = "otg";
+	phys = <&u2phy0_otg>;
+	phy-names = "usb2-phy";
+	extcon = <&usb2phy0>;
+	maximum-speed = "high-speed";
+	snps,dis_u2_susphy_quirk;
+	status = "okay";
+};
+
+/* USB 3.0 OTG controller */
+&usbdrd30 {
+	status = "okay";
+};
+
+&usbhost_dwc3 {
+	status = "okay";
+};
+
+/* USB 3.0 Host_1 controller */
+&usbhost30 {
+	status = "okay";
+};
+
+&hdmi {
+	avdd-0v9-supply = <&vdda0v9_image>;
+	avdd-1v8-supply = <&vcca1v8_image>;
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			hdmi_out_con: endpoint@2 {
+				reg = <2>;
+				remote-endpoint = <&hdmi_con_in>;
+			};
+		};
+	};
+};
+
+&hdmi_in_vp0 {
+	status = "okay";
+};
+
+&hdmi_sound {
+	status = "okay";
+};
+
+&i2s0_8ch {
+	status = "okay";
 };

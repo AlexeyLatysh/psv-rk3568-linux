@@ -4,6 +4,7 @@
 // DT for PLC_BB5_revX base board
 
 #include <dt-bindings/pinctrl/rockchip.h>
+#include "rk3568-psv-plc-tft.dtsi"
 
 &{/} {
 	codec_clk: codec_clk {

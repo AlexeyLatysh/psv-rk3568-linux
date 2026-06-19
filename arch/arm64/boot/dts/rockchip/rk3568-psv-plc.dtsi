@@ -107,13 +107,6 @@
 		};
 	};
 
-    beeper {
-        pinctrl-names = "default";
-        pinctrl-0 = <&beeper_pin>;
-		compatible = "gpio-beeper";
-		gpios = <&gpio4 RK_PD2 GPIO_ACTIVE_LOW>;
-	};
-
 	vcc5v0: vcc5v0-regulator {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc5v0";
@@ -168,15 +161,6 @@
 		vin-supply = <&vcc5v0>;
 	};
 
-	aud1v8_ldo_ext: aud1v8-ldo-ext-regulator {
-		compatible = "regulator-fixed";
-		regulator-name = "aud1v8_ldo-ext";
-		regulator-min-microvolt = <1800000>;
-		regulator-max-microvolt = <1800000>;
-		regulator-always-on;
-		vin-supply = <&vcc3v3_ext>;
-	};
-
 	bt_en: bt-en {
 		compatible = "mmc-pwrseq-emmc";
 		pinctrl-names = "default";
@@ -191,149 +175,9 @@
 		reset-gpios = <&gpio4 RK_PC0 GPIO_ACTIVE_LOW>;
 	};
 
-	lcd_bl: backlight {
-		compatible = "pwm-backlight";
-		pwms = <&pwm14 0 50000 0>;
-		brightness-levels = <0 51 53 56 62 75 101 152 255>;
-		default-brightness-level = <8>;
-		power-supply = <&vcc5v0>;
-	};
-
-	tft_panel: rgb0_panel {
-		status = "okay";
-		compatible = "simple-panel";
-		connector-type = "dpi";
-		enable-gpios = <&gpio3 RK_PC5 GPIO_ACTIVE_HIGH>;
-		backlight = <&lcd_bl>;
-		power-supply = <&vcc3v3_ext>;
-		bus-format = <MEDIA_BUS_FMT_RGB888_1X24>;
-		bpc = <8>;
-
-		display_timings: display-timings {
-			native-mode = <&timing800x480>;
-			timing800x480: 800x480 {
-				// 5", 7" 800x480 @ 60Hz RGB
-				clock-frequency = <31000000>;
-				hactive = <800>;
-				vactive = <480>;
-				hfront-porch = <40>; //39
-				hback-porch = <88>; //39
-				vfront-porch = <13>; //13
-				vback-porch = <32>; //29
-				hsync-len = <48>; //47
-				vsync-len = <3>; //2
-				hsync-active = <0>;
-				vsync-active = <0>;
-			};
-			timing1024x600: 1024x600 {
-				// 10.1" 1024x600 @ 60Hz RGB
-				clock-frequency = <51400000>;
-				hactive = <1024>;
-				vactive = <600>;
-				hfront-porch = <160>; //220
-				hback-porch = <160>; //100
-				vfront-porch = <12>; //25
-				vback-porch = <23>; //10
-				hsync-len = <2>; //1
-				vsync-len = <2>; //1
-				hsync-active = <0>;
-				vsync-active = <0>;
-			};
-			timing1024x768: 1024x768 {
-				// 10.4", 12.1", 15" 1024x768 @ 60Hz 1ch-LVDS
-				// clock-frequency = <65000000>;
-				clock-frequency = <65800000>; // (hactive + hfront-porch + hback-porch + hsync-len) * (vactive + vfront-porch + vback-porch + vsync-len) * 60Hz
-				hactive = <1024>;
-				vactive = <768>;
-				hfront-porch = <160>;
-				hback-porch = <160>;
-				vfront-porch = <6>;
-				vback-porch = <32>;
-				hsync-len = <10>;//1
-				vsync-len = <4>;//1
-				de-active = <0>;
-				pixelclk-active = <0>;
-			};
-			timing1280x1024: 1280x1024 {
-				// 17", 19" 1280x1024 @ 60Hz 2ch-LVDS
-				clock-frequency = <118000000>; // (hactive + hfront-porch + hback-porch + hsync-len) * (vactive + vfront-porch + vback-porch + vsync-len) * 60Hz
-				hactive = <1280>;
-				vactive = <1024>;
-				hfront-porch = <204>;
-				hback-porch = <204>;
-				vfront-porch = <6>;
-				vback-porch = <78>;
-				hsync-len = <100>;
-				vsync-len = <1>;
-				de-active = <0>;
-				pixelclk-active = <0>;
-			};
-			timing1920x1080: 1920x1080 {
-				// 21.5", 24" 1920x1080 @ 50Hz //60Hz 2ch-LVDS
-				clock-frequency = <149000000>;
-				hactive = <1920>;
-				vactive = <1080>;
-				hback-porch = <96>;
-				hfront-porch = <120>;
-				vback-porch = <8>;
-				vfront-porch = <33>;
-				hsync-len = <64>;
-				vsync-len = <4>;
-				hsync-active = <0>;
-				vsync-active = <0>;
-				de-active = <0>;
-				pixelclk-active = <0>;
-			};
-		};
-		
-		panel_port: port {
-			panel_in: endpoint {
-				remote-endpoint = <&rgb_out>;
-			};
-		};
-	};
-
-	sound {
-		status = "okay";
-		compatible = "simple-audio-card";
-		simple-audio-card,format = "i2s";
-		simple-audio-card,mclk-fs = <256>;
-		simple-audio-card,name = "PLC-audio";
-
-		simple-audio-card,cpu {
-			sound-dai = <&i2s3_2ch>;
-		};
-		simple-audio-card,codec {
-			sound-dai = <&tlv320aic3104>;
-		};
-	};
-
-	sc16is740_clk: sc16is740_clk {
-		compatible = "fixed-clock";
-		#clock-cells = <0>;
-		clock-frequency = <7327800>;
-	};
-
-	gmac0_clkin_rmii: external-gmac0-rmii-clock {
-		compatible = "fixed-clock";
-		clock-frequency = <50000000>;
-		clock-output-names = "gmac0_clkin_rmii";
-		#clock-cells = <0>;
-	};
-
 	test-power {
 		status = "okay";
 	};
-
-	touchscreen: touchscreen {
-		compatible = "resistive-adc-touch";
-		io-channels = <&tsc2046 1>, <&tsc2046 3>, <&tsc2046 4>, <&tsc2046 5>;
-		io-channel-names = "y", "z1", "z2", "x";
-		touchscreen-min-pressure = <65000>;
-		touchscreen-x-plate-ohms = <300>;
-		status = "okay";
-	};
-
 };
 
 &bus_npu {
@@ -394,34 +238,6 @@
 
 &gpu_power_model {
 	compatible = "arm,mali-simple-power-model";
-};
-
-&gmac0_clkin {
-	clock-frequency = <50000000>;
-};
-
-&gmac0 {
-	// https://bbs.elecfans.com/jishu_2310913_1_1.html
-	phy-mode = "rmii";
-	clock_in_out = "input";
-	phy-supply = <&vcc3v3_ext>;
-
-	assigned-clocks = <&cru SCLK_GMAC0_RX_TX>, <&cru SCLK_GMAC0>;
-	assigned-clock-parents = <&cru SCLK_GMAC0_RMII_SPEED>, <&gmac0_clkin>;
-	assigned-clock-rates = <0>, <50000000>;
-
-	pinctrl-names = "default";
-	pinctrl-0 = <&gmac0_miim
-			 &gmac0_clkinout
-		     &gmac0_tx_bus2
-		     &gmac0_rx_bus2
-		     &gmac0_rx_er>;
-
-	tx_delay = <0x3c>;
-	rx_delay = <0x2f>;
-
-	phy-handle = <&rgmii_phy0>;
-	status = "okay";
 };
 
 &i2c0 {
@@ -719,20 +535,6 @@
 	
 	clock-frequency = <400000>;
 
-	tlv320aic3104: tlv320aic3104@18 {
-		status = "okay";
-        #sound-dai-cells = <0>;
-		compatible = "ti,tlv320aic3104";
-		reg = <0x18>;
-
-		adc-settle-ms = <40>;
-
-		AVDD-supply = <&vcc3v3_ext>;
-		IOVDD-supply = <&vcc3v3_ext>;
-		DRVDD-supply = <&vcc3v3_ext>;
-		DVDD-supply = <&aud1v8_ldo_ext>;
-	};
-
 	rtc_ds1339: rtc@68 {
 		compatible = "dallas,ds1339";
 		reg = <0x68>;
@@ -742,46 +544,6 @@
 		compatible = "microchip,mcp7940x";
 		reg = <0x6f>;
 	};
-};
-
-&i2c5 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&i2c5m1_xfer>;
-	clock-frequency = <400000>;
-
-	sc16is740: sc16is740@4d {
-		pinctrl-names = "default";
-		pinctrl-0 = <&GPIO2_pin>;
-		compatible = "nxp,sc16is740";
-		reg = <0x4d>; // IC I2C address
-		clocks = <&sc16is740_clk>;
-		status = "okay";
-		interrupt-parent = <&gpio3>;
-		interrupts = <RK_PD4 IRQ_TYPE_EDGE_FALLING>;
-
-		gpio-controller;
-		#gpio-cells = <2>;
-		
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		uart@0 {
-			reg = <0>;
-			uart-has-rtscts;
-			nxp,modem-control-line-ports = <0>;
-		};
-	};
-};
-
-&i2s3_2ch {
-	status = "okay";
-	rockchip,clk-trcm = <1>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&i2s3m1_sclk
-		     &i2s3m1_lrck
-		     &i2s3m1_sdi
-		     &i2s3m1_sdo>;
 };
 
 &iep {
@@ -800,13 +562,6 @@
 	status = "okay";
 };
 
-&mdio0 {
-	rgmii_phy0: phy@0 {
-		compatible = "ethernet-phy-ieee802.3-c22";
-		reg = <0x0>;
-	};
-};
-
 &mpp_srv {
 	status = "okay";
 };
@@ -815,12 +570,6 @@
 
 	pinctrl-names = "default";
 	pinctrl-0 = <&refclk_pins>;
-
-	beeper {
-		beeper_pin: beeper-pin {
-			rockchip,pins = <4 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-	};
 
 	bt-en {
 		GPIO6_pin: GPIO6-pin {
@@ -859,18 +608,6 @@
 		soc_slppin_rst: soc_slppin_rst {
 			rockchip,pins =
 				<0 RK_PA2 2 &pcfg_pull_none>;
-		};
-	};
-
-	sdmmc0 {
-		sdmmc_wp_gpio: sdmmc-wp-gpio {
-			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-	};
-
-	sc16is740 {
-		GPIO2_pin: GPIO2-pin {
-			rockchip,pins = <3 RK_PD4 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 
@@ -965,24 +702,6 @@
 	/delete-node/ drm-cubic-lut@0;
 };
 
-&rgb {
-	status = "okay";
-
-	ports {
-		rgb_port: port@1 {
-			reg = <1>;
-			rgb_out: endpoint {
-				remote-endpoint = <&panel_in>;
-				data-lines = <24>;
-			};
-		};
-	};
-};
-
-&rgb_in_vp2 {
-	status = "okay";
-};
-
 &rk_rga {
 	status = "okay";
 };
@@ -1025,10 +744,6 @@
 	status = "okay";
 };
 
-&route_rgb {
-    status = "okay";
-};
-
 &saradc {
 	status = "okay";
 	vref-supply = <&vcca_1v8>;
@@ -1052,8 +767,6 @@
 	vmmc-supply = <&vcc3v3_ext>;
 	vqmmc-supply = <&vcc3v3_ext>;
 	pinctrl-names = "default";
-	pinctrl-0 = <&sdmmc0_bus4 &sdmmc0_clk &sdmmc0_cmd &sdmmc0_det &sdmmc_wp_gpio>;
-	wp-gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
 	status = "okay";
 };
 
@@ -1084,49 +797,6 @@
 	status = "okay";
 };
 
-&spi0 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&spi0m0_pins &spi0m0_cs0>;
-	status = "okay";
-
-	tsc2046: tsc2046@0 {
-		reg = <0>;			/* CS0 */
-		compatible = "ti,tsc2046e-adc";
-		spi-max-frequency = <1000000>;
-        pinctrl-names = "default";
-		vcc-supply = <&vcc3v3_ext>;
-		linux,wakeup;
-
-		#io-channel-cells = <1>;
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		channel@1 {
-			reg = <1>;
-			settling-time-us = <700>;
-			oversampling-ratio = <5>;
-		};
-
-		channel@3 {
-			reg = <3>;
-			settling-time-us = <700>;
-			oversampling-ratio = <5>;
-		};
-
-		channel@4 {
-			reg = <4>;
-			settling-time-us = <700>;
-			oversampling-ratio = <5>;
-		};
-
-		channel@5 {
-			reg = <5>;
-			settling-time-us = <700>;
-			oversampling-ratio = <5>;
-		};
-	};
-};
-
 &spi3 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&spi3m0_pins &spi3m0_cs0 &spi3m0_cs1>;
@@ -1153,39 +823,10 @@
 };
 
 &uart1 {
-	// RS232 - �������
+	// RS232 - console
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart1m1_xfer &uart1m1_ctsn &uart1m1_rtsn>;
-};
-
-&uart2 {
-	// ������
-	status = "okay";
-};
-
-&uart3 {
-	// RS485-1
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart3m0_xfer &RS485_1_RT_pin>;
-	dir-gpio = <&gpio4 RK_PA0 GPIO_ACTIVE_HIGH>;
-};
-
-&uart4 {
-	// RS485-2
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart4m0_xfer &RS485_2_RT_pin>;
-	dir-gpio = <&gpio4 RK_PA1 GPIO_ACTIVE_HIGH>;
-};
-
-&uart7 {
-	// GSM
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart7m2_xfer &GPIO0_pin>;
-	dma-names = "tx", "rx";
 };
 
 &uart9 {
@@ -1194,79 +835,6 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart9m2_xfer &RS485_3_RT_pin>;
 	dir-gpio = <&gpio4 RK_PB1 GPIO_ACTIVE_HIGH>;
-};
-
-&u2phy0_host {
-	status = "disabled";
-};
-
-&u2phy0_otg {
-	vbus-supply = <&vcc5v0_otg>;
-	status = "okay";
-};
-
-&u2phy1_host {
-	phy-supply = <&vcc5v0_host>;
-	status = "okay";
-};
-
-&u2phy1_otg {
-	phy-supply = <&vcc5v0_host>;
-	status = "okay";
-};
-
-/* USB OTG/USB Host_1 USB 2.0 Comb PHY_0 - front panel USB OTG */
-&usb2phy0 {
-	status = "okay";
-};
-
-/* USB Host_1/USB Host_2 USB 2.0 Comb PHY_0 */
-&usb2phy1 {
-	status = "okay";
-};
-
-/* USB 2.0 Host_2 EHCI controller for high speed */
-&usb_host0_ehci {
-	status = "okay";
-};
-
-/* USB 2.0 Host_2 OHCI controller for full/low speed */
-&usb_host0_ohci {
-	status = "okay";
-};
-
-/* USB 2.0 Host_3 EHCI controller for high speed */
-&usb_host1_ehci {
-	status = "disabled";
-};
-
-/* USB 2.0 Host_3 OHCI controller for full/low speed */
-&usb_host1_ohci {
-	status = "disabled";
-};
-
-&usbdrd_dwc3 {
-	dr_mode = "otg";
-	phys = <&u2phy0_otg>;
-	phy-names = "usb2-phy";
-	extcon = <&usb2phy0>;
-	maximum-speed = "high-speed";
-	snps,dis_u2_susphy_quirk;
-	status = "okay";
-};
-
-/* USB 3.0 OTG controller */
-&usbdrd30 {
-	status = "okay";
-};
-
-&usbhost_dwc3 {
-	status = "disabled";
-};
-
-/* USB 3.0 Host_1 controller */
-&usbhost30 {
-	status = "disabled";
 };
 
 &vdpu {
@@ -1295,14 +863,6 @@
 
 &vop_mmu {
 	status = "okay";
-};
-
-&vp2 {
-	// rgb-pixelclk;
-	// rb-swap;
-	rockchip,plane-mask = <(1 << ROCKCHIP_VOP2_CLUSTER1 | 1 << ROCKCHIP_VOP2_ESMART1 |
-				1 << ROCKCHIP_VOP2_SMART1)>;
-	rockchip,primary-plane = <ROCKCHIP_VOP2_ESMART1>;
 };
 
 &pmu {
