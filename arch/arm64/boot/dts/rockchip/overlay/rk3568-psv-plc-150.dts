@@ -16,7 +16,3 @@
         native-mode = <&timing1024x768>;
 };
 
-&touchscreen {
-        touchscreen-size-x = <1024>;
-        touchscreen-size-y = <768>;
-};

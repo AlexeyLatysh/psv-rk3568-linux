@@ -97,7 +97,7 @@
 };
 
 &pinctrl {
-	touchscreen {
+	touchscreen-rt {
 		GPIO7_pin: GPIO7-pin {
 			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
@@ -110,12 +110,13 @@
 	interrupts = <RK_PB0 0>;	/* GPIO0_B0 */
 };
 
-&touchscreen {
+&touchscreen_rt {
     touchscreen-x-plate-ohms = <40>;
+	touchscreen-size-x = <1024>;
+	touchscreen-size-y = <768>;
 };
 
 &lcd_bl {
-	// pwms = <&pwm14 0 500000 PWM_POLARITY_INVERTED>;
 	pwms = <&pwm14 0 500000 0>;
 	power-supply = <&vcc12v_ext>;
 };

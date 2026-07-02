@@ -1,0 +1,32 @@
+/dts-v1/;
+/plugin/;
+
+/* Capacitivy touchscreen */
+
+#include <dt-bindings/pinctrl/rockchip.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+
+&touchscreen_rt {
+    status = "disabled";
+};
+
+&touchscreen_cap {
+    interrupt-parent = <&gpio4>;
+    interrupts = <RK_PA7 IRQ_TYPE_LEVEL_LOW>;
+    pinctrl-names = "default";
+    pinctrl-0 = <&ts_cap_irq_pin>;
+    status = "okay";
+};
+
+&spi3 {
+	pinctrl-0 = <&spi3m0_pins &spi3m0_cs0>; // remove spi3m0_cs1 for IRQ cap touchscreen
+};
+
+&pinctrl {
+	touchscreen-cap {
+		ts_cap_irq_pin: ts-cap-irq-pin {
+			rockchip,pins = <4 RK_PA7 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+};

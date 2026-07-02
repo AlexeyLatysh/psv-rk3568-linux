@@ -148,7 +148,7 @@
 		};
 	};
 
-	touchscreen: touchscreen {
+	touchscreen_rt: touchscreen-rt {
 		compatible = "resistive-adc-touch";
 		io-channels = <&tsc2046 1>, <&tsc2046 3>, <&tsc2046 4>, <&tsc2046 5>;
 		io-channel-names = "y", "z1", "z2", "x";
@@ -201,6 +201,15 @@
 		IOVDD-supply = <&vcc3v3_ext>;
 		DRVDD-supply = <&vcc3v3_ext>;
 		DVDD-supply = <&aud1v8_ldo_ext>;
+	};
+
+	touchscreen_cap: ilitek@41 {
+		compatible = "ilitek,ili251x";
+		reg = <0x41>;
+		ilitek,name = "ilitek_i2c";
+		touchscreen-size-x = <1024>;
+		touchscreen-size-y = <768>;
+		status = "disabled";
 	};
 };
 

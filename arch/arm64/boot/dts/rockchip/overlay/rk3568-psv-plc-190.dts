@@ -16,7 +16,12 @@
         native-mode = <&timing1280x1024>;
 };
 
-&touchscreen {
+&touchscreen_rt {
+        touchscreen-size-x = <1280>;
+        touchscreen-size-y = <1024>;
+};
+
+&touchscreen_cap {
         touchscreen-size-x = <1280>;
         touchscreen-size-y = <1024>;
 };

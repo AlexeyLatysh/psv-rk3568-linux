@@ -11,6 +11,7 @@ dtbo-$(CONFIG_ARCH_ROCKCHIP) += \
 	rk3568-psv-plc-190.dtbo \
 	rk3568-psv-plc-215.dtbo \
 	rk3568-psv-plc-240.dtbo \
+	rk3568-psv-plc-capts.dtbo \
 	rk3568-psv-plc-no-front-sd.dtbo \
 	rk3568-psv-plc-no-front-usb.dtbo \
 	rk3568-psv-plc-din.dtbo \

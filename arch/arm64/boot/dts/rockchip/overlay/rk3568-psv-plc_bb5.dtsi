@@ -34,6 +34,11 @@
     interrupts = <RK_PC2 0>;	/* GPIO4_C2 */
 };
 
+&touchscreen_rt {
+	touchscreen-size-x = <800>;
+	touchscreen-size-y = <480>;
+};
+
 &tlv320aic3104 {
 	system-clock-frequency = <12000000>;
 	clocks = <&codec_clk>;
