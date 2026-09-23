@@ -130,6 +130,16 @@
 	status = "okay";
 };
 
+&i2c2 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	pinctrl-0 = <&i2c2m0_xfer>;
+	rtc_pcf8563: rtc@51 {
+		compatible = "nxp,pcf8563";
+		reg = <0x51>;
+	};
+};
+
 &mdio0 {
 	#address-cells = <1>;
 	#size-cells = <0>;
