@@ -21,10 +21,10 @@
 		pinctrl-names = "default";
 
 		switch-run {
-			label = "Run Switch";
-			gpios = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
-			linux,input-type = <EV_SW>;
-			linux,code = <SW_LID>;
+			label = "Run switch";
+			gpios = <&gpio4 RK_PC6 GPIO_ACTIVE_LOW>;
+			linux,input-type = <EV_KEY>;
+			linux,code = <KEY_PROG1>;
 			debounce-interval = <100>;
 		};
 	};
