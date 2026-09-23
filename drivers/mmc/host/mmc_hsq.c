@@ -10,6 +10,7 @@
 #include <linux/mmc/card.h>
 #include <linux/mmc/host.h>
 #include <linux/module.h>
+#include <linux/leds.h>
 
 #include "mmc_hsq.h"
 
@@ -50,6 +51,9 @@ static void mmc_hsq_pump_requests(struct mmc_hsq *hsq)
 	hsq->qcnt--;
 
 	spin_unlock_irqrestore(&hsq->lock, flags);
+
+	/* HSQ bypasses mmc_start_request(), so signal MMC activity here. */
+	led_trigger_event(mmc->led, LED_FULL);
 
 	if (mmc->ops->request_atomic)
 		ret = mmc->ops->request_atomic(mmc, hsq->mrq);
@@ -112,11 +116,13 @@ static void mmc_hsq_post_request(struct mmc_hsq *hsq)
 {
 	unsigned long flags;
 	int remains;
+	bool idle;
 
 	spin_lock_irqsave(&hsq->lock, flags);
 
 	remains = hsq->qcnt;
 	hsq->mrq = NULL;
+	idle = !remains;
 
 	/* Update the next available tag to be queued. */
 	mmc_hsq_update_next_tag(hsq, remains);
@@ -133,6 +139,10 @@ static void mmc_hsq_post_request(struct mmc_hsq *hsq)
 	}
 
 	spin_unlock_irqrestore(&hsq->lock, flags);
+
+	/* No active request and nothing pending: MMC is idle. */
+	if (idle)
+		led_trigger_event(hsq->mmc->led, LED_OFF);
 
 	 /*
 	  * Try to pump new request to host controller as fast as possible,
