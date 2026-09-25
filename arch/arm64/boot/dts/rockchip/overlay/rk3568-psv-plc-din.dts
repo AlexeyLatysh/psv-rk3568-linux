@@ -109,7 +109,7 @@
 
 &gmac0 {
 	assigned-clocks = <&cru SCLK_GMAC0_RX_TX>, <&cru SCLK_GMAC0>;
-	assigned-clock-parents = <&cru SCLK_GMAC0_RGMII_SPEED>, <&cru CLK_MAC0_2TOP>, <&gmac0_clkin>;
+	assigned-clock-parents = <&cru SCLK_GMAC0_RGMII_SPEED>, <&gmac0_clkin>;
 	clock_in_out = "input";
 	phy-mode = "rgmii";
 	phy-supply = <&vcc_1v8>;
@@ -125,8 +125,8 @@
 	snps,reset-active-low;
 	/* Reset time is 20ms, 100ms for rtl8211f */
 	snps,reset-delays-us = <0 20000 100000>;
-	tx_delay = <0x4f>;
-	rx_delay = <0x0f>;
+	rx_delay = <0x28>; // 0x00 - 0x50
+	tx_delay = <0x30>; // 0x00 - 0x60
 	status = "okay";
 };
 
@@ -151,7 +151,7 @@
 
 &gmac1 {
 	assigned-clocks = <&cru SCLK_GMAC1_RX_TX>, <&cru SCLK_GMAC1>;
-	assigned-clock-parents = <&cru SCLK_GMAC1_RGMII_SPEED>, <&cru CLK_MAC1_2TOP>, <&gmac1_clkin>;
+	assigned-clock-parents = <&cru SCLK_GMAC1_RGMII_SPEED>, <&gmac1_clkin>;
 	clock_in_out = "input";
 	phy-mode = "rgmii";
 	phy-supply = <&vcc_1v8>;
@@ -167,8 +167,8 @@
 	snps,reset-active-low;
 	/* Reset time is 20ms, 100ms for rtl8211f */
 	snps,reset-delays-us = <0 20000 100000>;
-	tx_delay = <0x4f>;
-	rx_delay = <0x0f>;
+	rx_delay = <0x28>;
+	tx_delay = <0x30>;
 	status = "okay";
 };
 
@@ -179,6 +179,19 @@
 		compatible = "ethernet-phy-ieee802.3-c22";
 		reg = <0x1>;
 	};
+};
+
+&pmu_io_domains {
+	pmuio1-supply = <&vcc3v3_pmu>;
+	pmuio2-supply = <&vcc3v3_pmu>;
+	vccio1-supply = <&vcc3v3_ext>;
+	vccio2-supply = <&vcc_1v8>;
+	vccio3-supply = <&vcc3v3_ext>;
+	vccio4-supply = <&vcc_1v8>;
+	vccio5-supply = <&vcc_1v8>;
+	vccio6-supply = <&vcc3v3_ext>;
+	vccio7-supply = <&vcc3v3_ext>;
+	status = "okay";
 };
 
 &uart2 {
