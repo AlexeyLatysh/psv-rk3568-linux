@@ -10,9 +10,10 @@
 &{/} {
     model = "PLC PSV RK3568 DIN";
 	aliases {
-		serial1 = "/soc/serial@fe680000";	// &uart4 modules
-		serial2 = "/soc/serial@fe660000";	// &uart2 RS485-1
-		serial3 = "/soc/serial@fe6b0000";	// &uart7 RS485-2
+		serial1 = "/serial@fe680000";	// &uart4 modules
+		serial2 = "/serial@fe660000";	// &uart2 RS485-1
+		serial3 = "/serial@fe6b0000";	// &uart7 RS485-2
+		serial4 = "/serial@fe6d0000";	// &uart9 RS485-3
 	};
 
 	gpio-keys {
@@ -214,23 +215,40 @@
 	// RS485-2
 	status = "okay";
 	pinctrl-names = "default";
-	pinctrl-0 = <&uart7m2_xfer &RS485_1_RT_pin>;
-	dir-gpio = <&gpio4 RK_PA0 GPIO_ACTIVE_HIGH>;
+	pinctrl-0 = <&uart7m2_xfer &RS485_2_RT_pin>;
+	dir-gpio = <&gpio4 RK_PA1 GPIO_ACTIVE_HIGH>;
 };
 
 &uart9 {
 	// RS485-3
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart9m2_xfer &RS485_3_RT_pin>;
 	dir-gpio = <&gpio3 RK_PC6 GPIO_ACTIVE_HIGH>;
 };
 
-&RS485_3_RT_pin {
-    rockchip,pins = <3 RK_PC6 RK_FUNC_GPIO &pcfg_pull_down>;
-};
-
 &pinctrl {
+	uart2 { // RS485-1_R/T
+		RS485_1_RT_pin: RS485-1_RT-pin {
+			rockchip,pins = <4 RK_PA0 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+	};
+
 	uart4 { // RS485-0_R/T
 		RS485_0_RT_pin: RS485-0_RT-pin {
 			rockchip,pins = <1 RK_PB2 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+	};
+
+	uart7 { // RS485-2_R/T
+		RS485_2_RT_pin: RS485-2_RT-pin {
+			rockchip,pins = <4 RK_PA1 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+	};
+
+	uart9 { // RS485-3_R/T
+		RS485_3_RT_pin: RS485-3_RT-pin {
+			rockchip,pins = <3 RK_PC6 RK_FUNC_GPIO &pcfg_pull_down>;
 		};
 	};
 

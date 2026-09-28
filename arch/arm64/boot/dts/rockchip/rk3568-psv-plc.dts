@@ -23,11 +23,6 @@
 	aliases {
 		mmc2 = &sdmmc2;
 		serial0 = &uart1;	// RS232
-		serial1 = &uart2;	// ������
-		serial2 = &uart3;	// RS485-1
-		serial3 = &uart4;	// RS485-2
-		serial4 = &uart9;	// RS485-3
-		serial5 = &uart7;	// GSM
 		spi1 = &spi3;
 	};
 
@@ -611,27 +606,9 @@
 		};
 	};
 
-	uart3 { // RS485-1_R/T
-		RS485_1_RT_pin: RS485-1_RT-pin {
-			rockchip,pins = <4 RK_PA0 RK_FUNC_GPIO &pcfg_pull_down>;
-		};
-	};
-
-	uart4 { // RS485-2_R/T
-		RS485_2_RT_pin: RS485-2_RT-pin {
-			rockchip,pins = <4 RK_PA1 RK_FUNC_GPIO &pcfg_pull_down>;
-		};
-	};
-
 	uart7 { // GPIO0 - resGSM_pins
 		GPIO0_pin: GPIO0-pin {
 			rockchip,pins = <4 RK_PD1 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-	};
-
-	uart9 { // RS485-3_R/T
-		RS485_3_RT_pin: RS485-3_RT-pin {
-			rockchip,pins = <4 RK_PB1 RK_FUNC_GPIO &pcfg_pull_down>;
 		};
 	};
 
@@ -828,14 +805,6 @@
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart1m1_xfer &uart1m1_ctsn &uart1m1_rtsn>;
-};
-
-&uart9 {
-	// RS485-3
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart9m2_xfer &RS485_3_RT_pin>;
-	dir-gpio = <&gpio4 RK_PB1 GPIO_ACTIVE_HIGH>;
 };
 
 &vdpu {
