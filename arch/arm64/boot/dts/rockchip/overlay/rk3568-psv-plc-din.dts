@@ -4,7 +4,6 @@
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/pinctrl/rockchip.h>
 #include <dt-bindings/clock/rk3568-cru.h>
-#include <dt-bindings/display/rockchip_vop.h>
 #include <dt-bindings/input/input.h>
 
 &{/} {
@@ -27,17 +26,6 @@
 			linux,input-type = <EV_KEY>;
 			linux,code = <KEY_PROG1>;
 			debounce-interval = <100>;
-		};
-	};
-
-	hdmi-con {
-		compatible = "hdmi-connector";
-		type = "a";
-
-		port {
-			hdmi_con_in: endpoint {
-				remote-endpoint = <&hdmi_out_con>;
-			};
 		};
 	};
 };
@@ -351,22 +339,6 @@
 	avdd-0v9-supply = <&vdda0v9_image>;
 	avdd-1v8-supply = <&vcca1v8_image>;
 	status = "okay";
-
-	ports {
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		port@0 {
-			reg = <0>;
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			hdmi_out_con: endpoint@2 {
-				reg = <2>;
-				remote-endpoint = <&hdmi_con_in>;
-			};
-		};
-	};
 };
 
 &hdmi_in_vp0 {
