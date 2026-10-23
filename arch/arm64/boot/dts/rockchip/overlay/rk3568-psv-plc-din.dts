@@ -156,8 +156,9 @@
 	snps,reset-active-low;
 	/* Reset time is 20ms, 100ms for rtl8211f */
 	snps,reset-delays-us = <0 20000 100000>;
-	rx_delay = <0x28>;
-	tx_delay = <0x30>;
+	// for 30mm FFC
+	rx_delay = <0x28>; // 0x10 - 283, 0x18 - 50, 0x1c - 1, 0x20 - 0, 0x30 - 0, 0x34 - 0, 0x38 - 151
+	tx_delay = <0x50>; // 0x30 - 0x70
 	status = "okay";
 };
 
